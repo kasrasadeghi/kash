@@ -1,7 +1,3 @@
-//
-// Created by kasra on 7/28/17.
-//
-
 #ifndef KSH2_SHELL_H
 #define KSH2_SHELL_H
 
@@ -26,17 +22,11 @@ public:
    */
   void script();
 
-  /**
-   * //TODO MAYBE
-   * returns the result that the output stream maybe hold
-   */
-  std::string result();
-
 private:
 
   std::pair<bool, std::string> _read();
-  void _eval();
-  void _print();
+  std::string _eval(const std::string&);
+  void _print(const std::string&);
 
   std::istream& _in = std::cin;
   std::ostream& _out = std::cout;

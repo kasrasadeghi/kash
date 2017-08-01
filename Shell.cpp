@@ -2,31 +2,48 @@
 #include "Shell.h"
 #include <utility>
 #include <string>
+#include <sstream>
+
+#include <unistd.h>
+
+using std::string;
+using std::pair;
 
 void Shell::loop() {
-  while(_read().first) {
-    _eval();
-    _print();
+  // string line;
+  // while (std::getline(_in, line)) {
+    // std::cout << line << std::endl;
+  // }
+  pair<bool, string> read = _read();
+  while(read.first) {
+    string eval = _eval(read.second);
+    _print(eval);
+    read = _read();
   }
 }
 
-std::pair<bool, std::string> Shell::_read() {
-  std::string result;
-  return std::pair<bool, std::string>(static_cast<bool>(std::getline(_in, result)), result);
+pair<bool, string> Shell::_read() {
+  string result;
+  const auto& temp = std::getline(_in, result);
+  return std::make_pair(static_cast<bool>(temp), result);
 }
 
-void Shell::_eval() {
-
+string Shell::_eval(const string& s) {
+  //TODO fancy eval
+  
+  return s;
 }
 
-void Shell::_print() {
-
+void Shell::_print(const string& s) {
+  _out << s << std::endl;
 }
 
 void Shell::script() {
-
+  //TODO impl
 }
 
-std::string Shell::result() {
-
-}
+// std::string Shell::result() {
+//   std::stringstream o;
+//   o << _out.rdbuf();
+//   return o.str();
+// }
