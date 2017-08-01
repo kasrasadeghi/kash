@@ -7,7 +7,6 @@
 
 class Shell {
 public:
-  Shell(std::istream& in, std::ostream& out): _in(in), _out(out) {}
 
   /**
    * the standard looping behaviour with cin and cout
@@ -24,12 +23,10 @@ public:
 
 private:
 
+  void _execute(const std::string& s);
   std::pair<bool, std::string> _read();
-  std::string _eval(const std::string&);
+  void _eval(const std::string&);
   void _print(const std::string&);
-
-  std::istream& _in = std::cin;
-  std::ostream& _out = std::cout;
 };
 
 

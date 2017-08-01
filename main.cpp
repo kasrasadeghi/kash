@@ -2,6 +2,6 @@
 #include "Shell.h"
 
 int main() {
-  Shell shell(std::cin, std::cout);
+  Shell shell;
   shell.loop();
 }

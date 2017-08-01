@@ -51,9 +51,6 @@ endfunction()
 add_executable(Main main.cpp
     Shell.h Shell.cpp)
 
-make_test(TestShell TestShell.cpp
-    Shell.h Shell.cpp)
-
 ##################### Versions #############################
 
 add_custom_target(versions)

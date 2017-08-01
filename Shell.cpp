@@ -3,11 +3,16 @@
 #include <utility>
 #include <string>
 #include <sstream>
+#include <vector>
 
-#include <unistd.h>
+#include <unistd.h>   // fork
+#include <sys/wait.h> // wait
 
 using std::string;
 using std::pair;
+using std::cin;
+using std::cout;
+using std::endl;
 
 void Shell::loop() {
   // string line;
@@ -16,34 +21,64 @@ void Shell::loop() {
   // }
   pair<bool, string> read = _read();
   while(read.first) {
-    string eval = _eval(read.second);
-    _print(eval);
+    _eval(read.second);
     read = _read();
   }
+  cout << endl;
 }
 
 pair<bool, string> Shell::_read() {
+  cout << " $ ";
   string result;
-  const auto& temp = std::getline(_in, result);
+  const auto& temp = std::getline(cin, result);
   return std::make_pair(static_cast<bool>(temp), result);
 }
 
-string Shell::_eval(const string& s) {
+void Shell::_eval(const string& s) {
   //TODO fancy eval
+  int rc = fork();
+  if (rc < 0) {
+    cout << "fork failed" << endl;
+    exit(1);
+  } else if (rc == 0) {
+    // close(STDOUT_FILENO);
+    _execute(s);   
+  } else {
+    wait(0);
+  }
+}
+
+void Shell::_execute(const string& s) {
+  std::vector<string> split;
+  string acc;
+  for (char c : s) {
+    if (isspace(c)) {
+      split.push_back(acc);
+      acc = "";
+    } else {
+      acc += c;
+    }
+  }
+  if (acc.length() != 0) split.push_back(acc);
   
-  return s;
+  size_t count = split.size();
+  char* args[count + 1];
+  for (size_t i = 0; i < count; ++i) {
+    args[i] = const_cast<char*>(split[i].c_str());
+  }
+  
+  args[count] = 0;
+  int result = execvp(args[0], args);
+  if (result < 0) {
+    perror("kash");
+    exit(0); 
+  }
 }
 
 void Shell::_print(const string& s) {
-  _out << s << std::endl;
+  cout << s << endl;
 }
 
 void Shell::script() {
   //TODO impl
 }
-
-// std::string Shell::result() {
-//   std::stringstream o;
-//   o << _out.rdbuf();
-//   return o.str();
-// }
