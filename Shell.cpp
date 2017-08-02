@@ -15,10 +15,6 @@ using std::cout;
 using std::endl;
 
 void Shell::loop() {
-  // string line;
-  // while (std::getline(_in, line)) {
-    // std::cout << line << std::endl;
-  // }
   pair<bool, string> read = _read();
   while(read.first) {
     _eval(read.second);
@@ -41,8 +37,11 @@ void Shell::_eval(const string& s) {
     cout << "fork failed" << endl;
     exit(1);
   } else if (rc == 0) {
+    // TODO check for input pipe
+    cout << "STDOUT_FILENO: " << STDOUT_FILENO << endl;
+    cout << "STDIN_FILENO: " << STDIN_FILENO << endl;
     // close(STDOUT_FILENO);
-    _execute(s);   
+    _execute(s);
   } else {
     wait(0);
   }
