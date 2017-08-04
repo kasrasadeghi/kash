@@ -8,6 +8,7 @@
 #include <unistd.h>   // fork
 #include <sys/wait.h> // wait
 
+using std::vector;
 using std::string;
 using std::pair;
 using std::cin;
@@ -47,11 +48,12 @@ void Shell::_eval(const string& s) {
   }
 }
 
-void Shell::_execute(const string& s) {
-  std::vector<string> split;
+vector<string> Shell::_parse(const string& s) {
+  vector<string> split;
   string acc;
   for (char c : s) {
     if (isspace(c)) {
+      if (acc == "") continue; 
       split.push_back(acc);
       acc = "";
     } else {
@@ -59,6 +61,19 @@ void Shell::_execute(const string& s) {
     }
   }
   if (acc.length() != 0) split.push_back(acc);
+  return split;
+}
+
+void Shell::_execute(const string& s) {
+  
+  vector<string> split = _parse(s);
+
+  if (split.size() == 0) {
+    return;
+  }
+  if (split[0] == "cd") {
+    //TODO handle changing directories
+  }
   
   size_t count = split.size();
   char* args[count + 1];
