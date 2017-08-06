@@ -1,7 +1,7 @@
 #ifndef KSH2_SHELL_H
 #define KSH2_SHELL_H
 
-
+#include <vector>
 #include <iostream>
 #include <string>
 

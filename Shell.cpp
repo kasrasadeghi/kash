@@ -5,7 +5,7 @@
 #include <sstream>
 #include <vector>
 
-#include <unistd.h>   // fork
+#include <unistd.h>   // fork, chdir, getcwd
 #include <sys/wait.h> // wait
 
 using std::vector;
@@ -25,6 +25,7 @@ void Shell::loop() {
 }
 
 pair<bool, string> Shell::_read() {
+  cout << get_current_dir_name() << endl;
   cout << " $ ";
   string result;
   const auto& temp = std::getline(cin, result);
@@ -32,15 +33,15 @@ pair<bool, string> Shell::_read() {
 }
 
 void Shell::_eval(const string& s) {
-  //TODO fancy eval
+  cout << s << endl;
   int rc = fork();
   if (rc < 0) {
     cout << "fork failed" << endl;
     exit(1);
   } else if (rc == 0) {
     // TODO check for input pipe
-    cout << "STDOUT_FILENO: " << STDOUT_FILENO << endl;
-    cout << "STDIN_FILENO: " << STDIN_FILENO << endl;
+    // cout << "STDOUT_FILENO: " << STDOUT_FILENO << endl;
+    // cout << "STDIN_FILENO: " << STDIN_FILENO << endl;
     // close(STDOUT_FILENO);
     _execute(s);
   } else {
@@ -72,7 +73,9 @@ void Shell::_execute(const string& s) {
     return;
   }
   if (split[0] == "cd") {
-    //TODO handle changing directories
+    if (split.size() != 2) return;
+    chdir(split[1].c_str());
+    return;
   }
   
   size_t count = split.size();
