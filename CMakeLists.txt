@@ -4,8 +4,8 @@ project(kash CXX)
 
 ##################### Finding packages ###############################
 
-find_package(Boost REQUIRED COMPONENTS serialization)
-find_package(GTest REQUIRED)
+#find_package(Boost REQUIRED COMPONENTS serialization)
+#find_package(GTest REQUIRED)
 
 find_program(CLANG-CHECK clang-check)
 message(${CLANG-CHECK})
@@ -29,8 +29,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-link_libraries(gtest)
-link_libraries(gtest_main)
+#link_libraries(gtest)
+#link_libraries(gtest_main)
 
 enable_testing()
 
