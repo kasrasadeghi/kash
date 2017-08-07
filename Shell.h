@@ -23,7 +23,7 @@ public:
 
 private:
 
-  void _execute(const std::string& s);
+  void _execute(const std::vector<std::string>& s);
   std::vector<std::string> _parse(const std::string& s);
   std::pair<bool, std::string> _read();
   void _eval(const std::string&);

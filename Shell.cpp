@@ -32,23 +32,6 @@ pair<bool, string> Shell::_read() {
   return std::make_pair(static_cast<bool>(temp), result);
 }
 
-void Shell::_eval(const string& s) {
-  cout << s << endl;
-  int rc = fork();
-  if (rc < 0) {
-    cout << "fork failed" << endl;
-    exit(1);
-  } else if (rc == 0) {
-    // TODO check for input pipe
-    // cout << "STDOUT_FILENO: " << STDOUT_FILENO << endl;
-    // cout << "STDIN_FILENO: " << STDIN_FILENO << endl;
-    // close(STDOUT_FILENO);
-    _execute(s);
-  } else {
-    wait(0);
-  }
-}
-
 vector<string> Shell::_parse(const string& s) {
   vector<string> split;
   string acc;
@@ -65,7 +48,7 @@ vector<string> Shell::_parse(const string& s) {
   return split;
 }
 
-void Shell::_execute(const string& s) {
+void Shell::_eval(const string& s) {
   
   vector<string> split = _parse(s);
 
@@ -78,6 +61,22 @@ void Shell::_execute(const string& s) {
     return;
   }
   
+  int rc = fork();
+  if (rc < 0) {
+    cout << "fork failed" << endl;
+    exit(1);
+  } else if (rc == 0) {
+    // TODO check for input pipe
+    // cout << "STDOUT_FILENO: " << STDOUT_FILENO << endl;
+    // cout << "STDIN_FILENO: " << STDIN_FILENO << endl;
+    // close(STDOUT_FILENO);
+    _execute(split);
+  } else {
+    wait(0);
+  }
+}
+
+void Shell::_execute(const vector<string>& split) { 
   size_t count = split.size();
   char* args[count + 1];
   for (size_t i = 0; i < count; ++i) {
