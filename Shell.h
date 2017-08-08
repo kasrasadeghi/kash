@@ -29,7 +29,7 @@ private:
   pair<bool, string> _read   ();
   void               _eval   (const string&);
 
-  vector<string>     _parse  (const string& s);
+  vector<string>     _split  (const string& s);
   
   bool               _builtin(const vector<string>& cmd);
   void          _exec_builtin(const vector<string>& cmd);

@@ -33,7 +33,7 @@ pair<bool, string> Shell::_read() {
   return std::make_pair(static_cast<bool>(temp), result);
 }
 
-vector<string> Shell::_parse(const string& s) {
+vector<string> Shell::_split(const string& s) {
   vector<string> split;
   string acc;
   for (char c : s) {
@@ -51,7 +51,7 @@ vector<string> Shell::_parse(const string& s) {
 
 void Shell::_eval(const string& s) {
   
-  vector<string> split = _parse(s);
+  vector<string> split = _split(s);
 
   if (split.size() == 0) {
     return;
@@ -72,7 +72,6 @@ bool Shell::_builtin(const vector<string>& split) {
 void Shell::_exec_builtin(const vector<string>& split) {
   if (split[0] == "cd") {
     if (split.size() != 2) {
-      //TODO set error message somehow and then do perror
       return;
     }
     chdir(split[1].c_str());
