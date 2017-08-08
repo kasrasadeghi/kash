@@ -33,7 +33,9 @@ private:
   
   bool               _builtin(const vector<string>& cmd);
   void          _exec_builtin(const vector<string>& cmd);
-  void          _exec_program(const vector<string>& cmd);
+  
+  void               _parse  (vector<string>& s);
+  void          _exec_program(vector<string>& cmd);
   
   void               _print  (const string&);
 };
