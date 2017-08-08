@@ -1,5 +1,6 @@
 
 #include "Shell.h"
+#include <algorithm>
 #include <utility>
 #include <string>
 #include <sstream>
@@ -55,12 +56,43 @@ void Shell::_eval(const string& s) {
   if (split.size() == 0) {
     return;
   }
+
+  if (_builtin(split)) {
+    _exec_builtin(split);
+    return;
+  }
+  
+  _exec_program(split);
+}
+
+bool Shell::_builtin(const vector<string>& split) {
+  return split[0] == "cd" or split[0] == "l";
+}
+
+void Shell::_exec_builtin(const vector<string>& split) {
   if (split[0] == "cd") {
-    if (split.size() != 2) return;
+    if (split.size() != 2) {
+      //TODO set error message somehow and then do perror
+      return;
+    }
     chdir(split[1].c_str());
     return;
   }
   
+  if (split[0] == "l") {
+    vector<string> colored_ls;
+    colored_ls.push_back("ls");
+    colored_ls.push_back("--color");
+    colored_ls.push_back("-F");
+    if (split.size() > 1) {
+      std::copy(split.begin() + 1, split.end(), back_inserter(colored_ls));
+    }
+    _exec_program(colored_ls);
+    return;
+  }
+}
+
+void Shell::_exec_program(const vector<string>& split) {
   int rc = fork();
   if (rc < 0) {
     cout << "fork failed" << endl;
@@ -70,25 +102,23 @@ void Shell::_eval(const string& s) {
     // cout << "STDOUT_FILENO: " << STDOUT_FILENO << endl;
     // cout << "STDIN_FILENO: " << STDIN_FILENO << endl;
     // close(STDOUT_FILENO);
-    _execute(split);
+    
+    size_t count = split.size();
+    char* args[count + 1];
+    for (size_t i = 0; i < count; ++i) {
+      args[i] = const_cast<char*>(split[i].c_str());
+    }
+    
+    args[count] = 0;
+    int result = execvp(args[0], args);
+    if (result < 0) {
+      perror("kash");
+      exit(0); 
+    }
   } else {
     wait(0);
   }
-}
-
-void Shell::_execute(const vector<string>& split) { 
-  size_t count = split.size();
-  char* args[count + 1];
-  for (size_t i = 0; i < count; ++i) {
-    args[i] = const_cast<char*>(split[i].c_str());
-  }
   
-  args[count] = 0;
-  int result = execvp(args[0], args);
-  if (result < 0) {
-    perror("kash");
-    exit(0); 
-  }
 }
 
 void Shell::_print(const string& s) {

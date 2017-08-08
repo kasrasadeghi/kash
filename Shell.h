@@ -5,6 +5,10 @@
 #include <iostream>
 #include <string>
 
+using std::string;
+using std::vector;
+using std::pair;
+
 class Shell {
 public:
 
@@ -22,12 +26,16 @@ public:
   void script();
 
 private:
+  pair<bool, string> _read   ();
+  void               _eval   (const string&);
 
-  void _execute(const std::vector<std::string>& s);
-  std::vector<std::string> _parse(const std::string& s);
-  std::pair<bool, std::string> _read();
-  void _eval(const std::string&);
-  void _print(const std::string&);
+  vector<string>     _parse  (const string& s);
+  
+  bool               _builtin(const vector<string>& cmd);
+  void          _exec_builtin(const vector<string>& cmd);
+  void          _exec_program(const vector<string>& cmd);
+  
+  void               _print  (const string&);
 };
 
 
